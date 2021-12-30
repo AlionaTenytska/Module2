@@ -96,25 +96,20 @@ public class ShoppingCart {
         StringBuilder sb = new StringBuilder();
 
         // header
-        for (int i = 0; i < header.length; i++)
-            appendFormatted(sb, header[i], align[i], width[i]);
-            addSeparator(sb, lineLength);
+        addFormattedLine(sb, header, align, width, true);
 
         // separator
-        for (int i = 0; i < lineLength; i++)
-            sb.append("-");
-            sb.append("\n");
+        addSeparator(sb, lineLength);
+
         // lines
         for (String[] line : lines) {
-            addSeparator(sb, lineLength);
+            addFormattedLine(sb, line, align, width, true);
         }
-
         if(lines.size() > 0){
             addSeparator(sb, lineLength);
         }
         // footer
-        for (int i = 0; i < footer.length; i++)
-            appendFormatted(sb, footer[i], align[i], width[i]);
+        addFormattedLine(sb, footer, align, width, false);
         return sb.toString();
     }
     // --- private section -----------------------------------------------------
@@ -183,6 +178,13 @@ public class ShoppingCart {
     private void columnWidth(int[] width, String[] columns){
         for(int i = 0; i < width.length; i++)
             width[i] = (int) Math.max(width[i], columns[i].length());
+    }
+
+    private void addFormattedLine(StringBuilder sb, String[] line, int[] align, int[]
+            width, Boolean newLine){
+        for(int i = 0; i < line.length; i++)
+            appendFormatted(sb, line[i], align[i], width[i]);
+        if(newLine) sb.append('\n');
     }
 
     /** item info */
