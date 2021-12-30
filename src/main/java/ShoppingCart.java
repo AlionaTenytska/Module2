@@ -5,11 +5,8 @@ import java.text.*;
 */
 public class ShoppingCart {
     public static enum ItemType { NEW, REGULAR, SECOND_FREE, SALE };
-    /**
-     * Tests all class methods.
-     */
+
     public static void main(String[] args){
-        // TODO: add tests here
         ShoppingCart cart = new ShoppingCart();
         cart.addItem("Apple", 0.99, 5, ItemType.NEW);
         cart.addItem("Banana", 20.00, 4, ItemType.SECOND_FREE);
@@ -62,7 +59,10 @@ public class ShoppingCart {
         double total = calculateItemsParameters();
         return getFormattedTicketTable(total);
     }
-
+    /**
+     * Calculate Items Parameters.
+     * @return total price for item
+     */
     private double calculateItemsParameters(){
         double total = 0.00;
         for (Item item : items) {
@@ -73,6 +73,11 @@ public class ShoppingCart {
         }
         return total;
     }
+
+    /**
+     * Formatted table.
+     * @return string as lines, separated with \n
+     */
     private String getFormattedTicketTable(double total){
         if (items.size() == 0)
             return "No items.";
@@ -82,11 +87,7 @@ public class ShoppingCart {
         String[] footer = { String.valueOf(items.size()),"","","","", MONEY.format(total) };
 
         // column max length
-        int[] width = new int[]{0,0,0,0,0,0};
-        for (String[] line : lines)
-            columnWidth(width, line);
-        columnWidth(width, header);
-        columnWidth(width, footer);
+        int[] width = getColumnMaxLength(lines, header, footer);
 
         // line length
         int lineLength = width.length - 1;
@@ -111,7 +112,21 @@ public class ShoppingCart {
         addFormattedLine(sb, footer, align, width, false);
         return sb.toString();
     }
-
+    /**
+     * Calculate column lines.
+     * @return column max length
+     */
+    private int[] getColumnMaxLength(List<String[]> lines, String[] header, String[] footer) {
+        int[] width = new int[]{0,0,0,0,0,0};
+        for (String[] line : lines)
+            columnWidth(width, line);
+        columnWidth(width, header);
+        columnWidth(width, footer);
+        return width;
+    }
+    /**
+     * Convert each item to lines for table.
+     */
     private List<String[]> convertItemsToTableLines(){
         List<String[]> lines = new ArrayList<>();
         int index = 0;
