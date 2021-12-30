@@ -76,28 +76,10 @@ public class ShoppingCart {
     private String getFormattedTicketTable(double total){
         if (items.size() == 0)
             return "No items.";
-        List<String[]> lines = new ArrayList<String[]>();
-        String[] header = {"#","Item","Price","Quan.","Discount","Total"};
+        String[] header = {"#", "Item", "Price", "Quan.", "Discount", "Total"};
         int[] align = new int[] { 1, -1, 1, 1, 1, 1 };
-// formatting each line
-        total = 0.00;
-        int index = 0;
-        for (Item item : items) {
-            int discount = calculateDiscount(item.getItemType(), item.getQuantity());
-            item.setTotalPrice(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount())/100.00);
-            lines.add(new String[]{
-                    String.valueOf(++index),
-                    item.getTitle(),
-                    MONEY.format(item.getPrice()),
-                    String.valueOf(item.getQuantity()),
-                    (item.getDiscount() == 0) ? "-" : (String.valueOf(item.getDiscount())
-                            + "%"),
-                    MONEY.format(item.getTotalPrice())
-            });
-            total += item.getTotalPrice();
-        }
-        String[] footer = { String.valueOf(index),"","","","",
-                MONEY.format(total) };
+        List<String[]> lines = convertItemsToTableLines();
+        String[] footer = { String.valueOf(items.size()),"","","","", MONEY.format(total) };
 
         // column max length
         int[] width = new int[]{0,0,0,0,0,0};
@@ -129,6 +111,24 @@ public class ShoppingCart {
         addFormattedLine(sb, footer, align, width, false);
         return sb.toString();
     }
+
+    private List<String[]> convertItemsToTableLines(){
+        List<String[]> lines = new ArrayList<>();
+        int index = 0;
+        for (Item item : items) {
+            lines.add(new String[]{
+                    String.valueOf(++index),
+                    item.getTitle(),
+                    MONEY.format(item.getPrice()),
+                    String.valueOf(item.getQuantity()),
+                    (item.getDiscount() == 0) ? "-" : (String.valueOf(item.getDiscount()) + "%"),
+                    MONEY.format(item.getTotalPrice())
+
+            });
+        }
+        return lines;
+    }
+
     // --- private section -----------------------------------------------------
     private static final NumberFormat MONEY;
         static {
@@ -189,7 +189,8 @@ public class ShoppingCart {
 
     private void addSeparator(StringBuilder sb, int lineLength){
         for(int i = 0; i < lineLength; i++)
-            sb.append('\n');
+            sb.append("-");
+        sb.append("\n");
     }
 
     private void columnWidth(int[] width, String[] columns){
