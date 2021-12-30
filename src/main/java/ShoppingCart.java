@@ -99,22 +99,18 @@ public class ShoppingCart {
         // header
         for (int i = 0; i < header.length; i++)
             appendFormatted(sb, header[i], align[i], width[i]);
-            sb.append("\n");
+            addSeparator(sb, lineLength);
         // separator
         for (int i = 0; i < lineLength; i++)
             sb.append("-");
             sb.append("\n");
         // lines
         for (String[] line : lines) {
-            for (int i = 0; i < line.length; i++)
-                appendFormatted(sb, line[i], align[i], width[i]);
-                sb.append("\n");
+            addSeparator(sb, lineLength);
         }
-        if (lines.size() > 0) {
-            // separator
-            for (int i = 0; i < lineLength; i++)
-                sb.append("-");
-            sb.append("\n");
+
+        if(lines.size() > 0){
+            addSeparator(sb, lineLength);
         }
         // footer
         for (int i = 0; i < footer.length; i++)
@@ -178,6 +174,12 @@ public class ShoppingCart {
         }
         return discount;
     }
+
+    private void addSeparator(StringBuilder sb, int lineLength){
+        for(int i = 0; i < lineLength; i++)
+            sb.append('\n');
+    }
+
     /** item info */
     private static class Item{
         private String title;
