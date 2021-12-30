@@ -35,10 +35,10 @@ public class ShoppingCart {
         if (quantity <= 0)
             throw new IllegalArgumentException("Illegal quantity");
         Item item = new Item();
-        item.title = title;
-        item.price = price;
-        item.quantity = quantity;
-        item.type = type;
+        item.setTitle(title);
+        item.setPrice(price);
+        item.setQuantity(quantity);
+        item.setItemType(type);
         items.add(item);
     }
 
@@ -180,10 +180,56 @@ public class ShoppingCart {
     }
     /** item info */
     private static class Item{
-        String title;
-        double price;
-        int quantity;
-        ItemType type;
+        private String title;
+        private double price;
+        private int quantity;
+        private ItemType type;
+        private int discount;
+        private double total;
+
+        public Item(){}
+
+        public void setTitle(String title){
+            this.title = title;
+        }
+        public String getTitle(){
+            return title;
+        }
+
+        public void setPrice(double price){
+            this.price = price;
+        }
+        public double getPrice(){
+            return price;
+        }
+
+        public void setQuantity(int quantity){
+            this.quantity = quantity;
+        }
+        public int getQuantity(){
+            return quantity;
+        }
+
+        public ItemType getItemType(){
+            return type;
+        }
+        public void setItemType(ItemType type){
+            this.type = type;
+        }
+
+        public void setDiscount(int discount){
+            this.discount = discount;
+        }
+        public int getDiscount(){
+            return discount;
+        }
+
+        public void setTotalPrice(double total){
+            this.total = total;
+        }
+        public double getTotalPrice(){
+            return total;
+        }
     }
     /** Container for added items */
     private List<Item> items = new ArrayList<Item>();
