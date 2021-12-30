@@ -59,20 +59,52 @@ public class ShoppingCart {
      * if no items in cart returns "No items." string.
      */
     public String formatTicket(){
+        double total = calculateItemsParameters();
+        return getFormattedTicketTable(total);
+    }
+
+    private double calculateItemsParameters(){
+        double total = 0.00;
+        for (Item item : items) {
+            int discount = calculateDiscount(item.getItemType(), item.getQuantity());
+            item.setDiscount(discount);
+            item.setTotalPrice(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount())/ 100.00);
+            total += item.getTotalPrice();
+        }
+        return total;
+    }
+    private String getFormattedTicketTable(double total){
         if (items.size() == 0)
             return "No items.";
         List<String[]> lines = new ArrayList<String[]>();
         String[] header = {"#","Item","Price","Quan.","Discount","Total"};
         int[] align = new int[] { 1, -1, 1, 1, 1, 1 };
-        double total = calculateItemsParameters();
-        String[] footer = { String.valueOf(items.size()),"","","","", MONEY.format(total) };
-        // formatting table
+// formatting each line
+        total = 0.00;
+        int index = 0;
+        for (Item item : items) {
+            int discount = calculateDiscount(item.getItemType(), item.getQuantity());
+            item.setTotalPrice(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount())/100.00);
+            lines.add(new String[]{
+                    String.valueOf(++index),
+                    item.getTitle(),
+                    MONEY.format(item.getPrice()),
+                    String.valueOf(item.getQuantity()),
+                    (item.getDiscount() == 0) ? "-" : (String.valueOf(item.getDiscount())
+                            + "%"),
+                    MONEY.format(item.getTotalPrice())
+            });
+            total += item.getTotalPrice();
+        }
+        String[] footer = { String.valueOf(index),"","","","",
+                MONEY.format(total) };
+
         // column max length
         int[] width = new int[]{0,0,0,0,0,0};
         for (String[] line : lines)
             columnWidth(width, line);
-            columnWidth(width, header);
-            columnWidth(width, footer);
+        columnWidth(width, header);
+        columnWidth(width, footer);
 
         // line length
         int lineLength = width.length - 1;
@@ -96,17 +128,6 @@ public class ShoppingCart {
         // footer
         addFormattedLine(sb, footer, align, width, false);
         return sb.toString();
-    }
-
-    private double calculateItemsParameters(){
-        double total = 0.00;
-        for (Item item : items) {
-            int discount = calculateDiscount(item.getItemType(), item.getQuantity());
-            item.setDiscount(discount);
-            item.setTotalPrice(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount())/ 100.00);
-            total += item.getTotalPrice();
-        }
-        return total;
     }
     // --- private section -----------------------------------------------------
     private static final NumberFormat MONEY;
