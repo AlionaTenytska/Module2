@@ -85,21 +85,21 @@ public class ShoppingCart {
         // column max length
         int[] width = new int[]{0,0,0,0,0,0};
         for (String[] line : lines)
-            for (int i = 0; i < line.length; i++)
-                width[i] = (int) Math.max(width[i], line[i].length());
-        for (int i = 0; i < header.length; i++)
-            width[i] = (int) Math.max(width[i], header[i].length());
-        for (int i = 0; i < footer.length; i++)
-            width[i] = (int) Math.max(width[i], footer[i].length());
+            columnWidth(width, line);
+            columnWidth(width, header);
+            columnWidth(width, footer);
+
         // line length
         int lineLength = width.length - 1;
         for (int w : width)
             lineLength += w;
         StringBuilder sb = new StringBuilder();
+
         // header
         for (int i = 0; i < header.length; i++)
             appendFormatted(sb, header[i], align[i], width[i]);
             addSeparator(sb, lineLength);
+
         // separator
         for (int i = 0; i < lineLength; i++)
             sb.append("-");
@@ -178,6 +178,11 @@ public class ShoppingCart {
     private void addSeparator(StringBuilder sb, int lineLength){
         for(int i = 0; i < lineLength; i++)
             sb.append('\n');
+    }
+
+    private void columnWidth(int[] width, String[] columns){
+        for(int i = 0; i < width.length; i++)
+            width[i] = (int) Math.max(width[i], columns[i].length());
     }
 
     /** item info */
